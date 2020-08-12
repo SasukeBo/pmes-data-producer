@@ -29,7 +29,6 @@ func (d *Device) GetWithToken(token string) error {
 		device, ok := cacheValue.(Device)
 		if ok {
 			if err := copier.Copy(d, &device); err == nil {
-				log.Info("get device from cache")
 				return nil
 			}
 		}
