@@ -56,8 +56,4 @@ func init() {
 	if err != nil {
 		panic(fmt.Errorf("migrate to db error: \n%v", err.Error()))
 	}
-
-	DB.LogMode(true)
 }
-
-
