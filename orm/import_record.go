@@ -62,23 +62,19 @@ type ImportRecord struct {
 func (i *ImportRecord) GetDeviceRealtimeRecord(device *Device) error {
 	// 生成key
 	cacheKey := i.genKey(device.ID)
-	log.Info("cacheKey is %s", cacheKey)
 
 	// 获取缓存
 	cacheValue := cache.Get(cacheKey)
 	if cacheValue != nil {
-		log.Info("cacheValue is not nil")
 		record, ok := cacheValue.(ImportRecord)
 		if ok {
 			if err := copier.Copy(i, &record); err == nil {
 				if err := cache.Set(cacheKey, *i); err != nil {
 					log.Error("cache import record failed: %v", err)
 				}
-				log.Info("find record in cache")
 				return nil
 			}
 		}
-		log.Info("cacheValue is not ImportRecord type")
 	}
 
 	// 查询数据库 [当前设备的 实时导入的 当前日期的 正在导入的] 导入记录
@@ -89,7 +85,6 @@ func (i *ImportRecord) GetDeviceRealtimeRecord(device *Device) error {
 		query, device.ID, ImportRecordTypeRealtime, time.Now(), ImportStatusImporting,
 	).Find(&record).Error; err == nil {
 		if err := copier.Copy(i, &record); err == nil {
-			log.Info("find record in db")
 			if err := cache.Set(cacheKey, *i); err != nil {
 				log.Error("cache import record failed: %v", err)
 			}
